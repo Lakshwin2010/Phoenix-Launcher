@@ -5,10 +5,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -48,6 +50,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.drawable.toBitmap
@@ -226,6 +230,131 @@ fun AppLibraryScreen(
 }
 
 @Composable
+fun IosFolderSquareCard(
+    modifier: Modifier = Modifier,
+    onClick: (() -> Unit)? = null,
+    content: @Composable BoxScope.() -> Unit
+) {
+    FrostedGlassCard(
+        modifier = modifier
+            .fillMaxWidth()
+            .aspectRatio(1f),
+        shape = RoundedCornerShape(26.dp),
+        onClick = onClick
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(14.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            content()
+        }
+    }
+}
+
+@Composable
+fun IosCategoryFolderCard(
+    categoryTitle: String,
+    apps: List<AppInfo>,
+    onAppClick: (AppInfo) -> Unit,
+    onAppLongClick: (AppInfo) -> Unit
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        IosFolderSquareCard {
+            when (apps.size) {
+                1 -> {
+                    MiniAppSlot(apps[0], onAppClick, onAppLongClick, size = 60.dp)
+                }
+                2 -> {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterHorizontally),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        MiniAppSlot(apps[0], onAppClick, onAppLongClick)
+                        MiniAppSlot(apps[1], onAppClick, onAppLongClick)
+                    }
+                }
+                3 -> {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.SpaceBetween,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            MiniAppSlot(apps[0], onAppClick, onAppLongClick)
+                            MiniAppSlot(apps[1], onAppClick, onAppLongClick)
+                        }
+                        MiniAppSlot(apps[2], onAppClick, onAppLongClick)
+                    }
+                }
+                else -> {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.SpaceBetween,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            MiniAppSlot(apps[0], onAppClick, onAppLongClick)
+                            MiniAppSlot(apps[1], onAppClick, onAppLongClick)
+                        }
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            MiniAppSlot(apps[2], onAppClick, onAppLongClick)
+                            if (apps.size > 4) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(52.dp)
+                                        .clip(RoundedCornerShape(14.dp))
+                                        .background(Color.White.copy(alpha = 0.12f)),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = "+${apps.size - 3}",
+                                        color = Color.White,
+                                        fontSize = 13.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+                            } else {
+                                MiniAppSlot(apps[3], onAppClick, onAppLongClick)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(6.dp))
+
+        Text(
+            text = categoryTitle,
+            color = Color.White,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Medium,
+            textAlign = TextAlign.Center,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+    }
+}
+
+@Composable
 fun IosHiddenFolderCard(
     isUnlocked: Boolean,
     hiddenApps: List<AppInfo>,
@@ -233,69 +362,37 @@ fun IosHiddenFolderCard(
     onLockClick: () -> Unit,
     onAddClick: () -> Unit,
     onAppClick: (AppInfo) -> Unit,
-    onAppLongClick: (AppInfo) -> Unit,
-    modifier: Modifier = Modifier
+    onAppLongClick: (AppInfo) -> Unit
 ) {
-    FrostedGlassCard(
-        modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(26.dp),
-        onClick = if (!isUnlocked) onUnlockClick else null
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column(
-            modifier = Modifier.padding(14.dp)
+        IosFolderSquareCard(
+            onClick = if (!isUnlocked) onUnlockClick else null
         ) {
             if (!isUnlocked) {
-                // Locked State: Clean, centered iOS-style lock in 112.dp container
+                // Centered Lock Icon in square card
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(112.dp),
+                        .size(56.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(Color.White.copy(alpha = 0.10f)),
                     contentAlignment = Alignment.Center
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .size(54.dp)
-                            .clip(RoundedCornerShape(16.dp))
-                            .background(Color.White.copy(alpha = 0.10f)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Lock,
-                            contentDescription = "Hidden Vault Locked",
-                            tint = Color.White.copy(alpha = 0.85f),
-                            modifier = Modifier.size(26.dp)
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(10.dp))
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "Hidden",
-                        color = Color.White,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        maxLines = 1
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
                     Icon(
                         imageVector = Icons.Default.Lock,
-                        contentDescription = null,
-                        tint = Color.White.copy(alpha = 0.45f),
-                        modifier = Modifier.size(11.dp)
+                        contentDescription = "Hidden Vault Locked",
+                        tint = Color.White.copy(alpha = 0.85f),
+                        modifier = Modifier.size(26.dp)
                     )
                 }
             } else {
-                // Unlocked State: Exact same 2x2 grid layout as normal category folder cards
                 if (hiddenApps.isEmpty()) {
                     Box(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .height(112.dp)
-                            .clip(RoundedCornerShape(16.dp))
+                            .fillMaxSize()
+                            .clip(RoundedCornerShape(18.dp))
                             .background(Color.White.copy(alpha = 0.06f))
                             .clickable(onClick = onAddClick),
                         contentAlignment = Alignment.Center
@@ -319,21 +416,12 @@ fun IosHiddenFolderCard(
                 } else {
                     when (hiddenApps.size) {
                         1 -> {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(112.dp),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                MiniAppSlot(hiddenApps[0], onAppClick, onAppLongClick)
-                            }
+                            MiniAppSlot(hiddenApps[0], onAppClick, onAppLongClick, size = 60.dp)
                         }
                         2 -> {
                             Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(112.dp),
-                                horizontalArrangement = Arrangement.SpaceEvenly,
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterHorizontally),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 MiniAppSlot(hiddenApps[0], onAppClick, onAppLongClick)
@@ -341,36 +429,40 @@ fun IosHiddenFolderCard(
                             }
                         }
                         3 -> {
-                            Column(modifier = Modifier.fillMaxWidth()) {
+                            Column(
+                                modifier = Modifier.fillMaxSize(),
+                                verticalArrangement = Arrangement.SpaceBetween,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceBetween
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     MiniAppSlot(hiddenApps[0], onAppClick, onAppLongClick)
                                     MiniAppSlot(hiddenApps[1], onAppClick, onAppLongClick)
                                 }
-                                Spacer(modifier = Modifier.height(8.dp))
-                                Box(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    MiniAppSlot(hiddenApps[2], onAppClick, onAppLongClick)
-                                }
+                                MiniAppSlot(hiddenApps[2], onAppClick, onAppLongClick)
                             }
                         }
                         else -> {
-                            Column(modifier = Modifier.fillMaxWidth()) {
+                            Column(
+                                modifier = Modifier.fillMaxSize(),
+                                verticalArrangement = Arrangement.SpaceBetween,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceBetween
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     MiniAppSlot(hiddenApps[0], onAppClick, onAppLongClick)
                                     MiniAppSlot(hiddenApps[1], onAppClick, onAppLongClick)
                                 }
-                                Spacer(modifier = Modifier.height(8.dp))
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceBetween
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     MiniAppSlot(hiddenApps[2], onAppClick, onAppLongClick)
                                     if (hiddenApps.size > 4) {
@@ -396,175 +488,65 @@ fun IosHiddenFolderCard(
                         }
                     }
                 }
-
-                Spacer(modifier = Modifier.height(10.dp))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = "Hidden",
-                            color = Color.White,
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            maxLines = 1
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Icon(
-                            imageVector = Icons.Default.LockOpen,
-                            contentDescription = null,
-                            tint = Color(0xFF34C759),
-                            modifier = Modifier.size(11.dp)
-                        )
-                    }
-
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Box(
-                            modifier = Modifier
-                                .size(20.dp)
-                                .clip(CircleShape)
-                                .background(Color.White.copy(alpha = 0.15f))
-                                .clickable(onClick = onAddClick),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Add,
-                                contentDescription = "Add",
-                                tint = Color.White,
-                                modifier = Modifier.size(12.dp)
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(6.dp))
-                        Box(
-                            modifier = Modifier
-                                .size(20.dp)
-                                .clip(CircleShape)
-                                .background(Color.White.copy(alpha = 0.15f))
-                                .clickable(onClick = onLockClick),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Lock,
-                                contentDescription = "Lock",
-                                tint = Color.White,
-                                modifier = Modifier.size(11.dp)
-                            )
-                        }
-                    }
-                }
             }
         }
-    }
-}
 
-@Composable
-fun IosCategoryFolderCard(
-    categoryTitle: String,
-    apps: List<AppInfo>,
-    onAppClick: (AppInfo) -> Unit,
-    onAppLongClick: (AppInfo) -> Unit
-) {
-    FrostedGlassCard(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(26.dp)
-    ) {
-        Column(
-            modifier = Modifier.padding(14.dp)
+        Spacer(modifier = Modifier.height(6.dp))
+
+        // Centered label below card
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
         ) {
-            // Adaptive Mini App Grid inside folder: NEVER renders blank black holes
-            when (apps.size) {
-                1 -> {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(112.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        MiniAppSlot(apps[0], onAppClick, onAppLongClick)
-                    }
-                }
-                2 -> {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(112.dp),
-                        horizontalArrangement = Arrangement.SpaceEvenly,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        MiniAppSlot(apps[0], onAppClick, onAppLongClick)
-                        MiniAppSlot(apps[1], onAppClick, onAppLongClick)
-                    }
-                }
-                3 -> {
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            MiniAppSlot(apps[0], onAppClick, onAppLongClick)
-                            MiniAppSlot(apps[1], onAppClick, onAppLongClick)
-                        }
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Box(
-                            modifier = Modifier.fillMaxWidth(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            MiniAppSlot(apps[2], onAppClick, onAppLongClick)
-                        }
-                    }
-                }
-                else -> {
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            MiniAppSlot(apps[0], onAppClick, onAppLongClick)
-                            MiniAppSlot(apps[1], onAppClick, onAppLongClick)
-                        }
-
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            MiniAppSlot(apps[2], onAppClick, onAppLongClick)
-                            if (apps.size > 4) {
-                                Box(
-                                    modifier = Modifier
-                                        .size(52.dp)
-                                        .clip(RoundedCornerShape(14.dp))
-                                        .background(Color.White.copy(alpha = 0.12f)),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Text(
-                                        text = "+${apps.size - 3}",
-                                        color = Color.White,
-                                        fontSize = 13.sp,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                }
-                            } else {
-                                MiniAppSlot(apps[3], onAppClick, onAppLongClick)
-                            }
-                        }
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(10.dp))
-
             Text(
-                text = categoryTitle,
+                text = "Hidden",
                 color = Color.White,
                 fontSize = 12.sp,
-                fontWeight = FontWeight.SemiBold,
-                maxLines = 1
+                fontWeight = FontWeight.Medium,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
+            Spacer(modifier = Modifier.width(4.dp))
+            Icon(
+                imageVector = if (isUnlocked) Icons.Default.LockOpen else Icons.Default.Lock,
+                contentDescription = null,
+                tint = if (isUnlocked) Color(0xFF34C759) else Color.White.copy(alpha = 0.45f),
+                modifier = Modifier.size(11.dp)
+            )
+            if (isUnlocked) {
+                Spacer(modifier = Modifier.width(6.dp))
+                Box(
+                    modifier = Modifier
+                        .size(18.dp)
+                        .clip(CircleShape)
+                        .background(Color.White.copy(alpha = 0.15f))
+                        .clickable(onClick = onAddClick),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Add",
+                        tint = Color.White,
+                        modifier = Modifier.size(10.dp)
+                    )
+                }
+                Spacer(modifier = Modifier.width(4.dp))
+                Box(
+                    modifier = Modifier
+                        .size(18.dp)
+                        .clip(CircleShape)
+                        .background(Color.White.copy(alpha = 0.15f))
+                        .clickable(onClick = onLockClick),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Lock,
+                        contentDescription = "Lock",
+                        tint = Color.White,
+                        modifier = Modifier.size(10.dp)
+                    )
+                }
+            }
         }
     }
 }
@@ -573,18 +555,19 @@ fun IosCategoryFolderCard(
 fun MiniAppSlot(
     app: AppInfo?,
     onAppClick: (AppInfo) -> Unit,
-    onAppLongClick: (AppInfo) -> Unit
+    onAppLongClick: (AppInfo) -> Unit,
+    size: androidx.compose.ui.unit.Dp = 52.dp
 ) {
     if (app != null) {
         SquircleIcon(
             app = app,
-            iconSize = 52.dp,
+            iconSize = size,
             showLabel = false,
             onClick = { onAppClick(app) },
             onLongClick = { onAppLongClick(app) }
         )
     } else {
-        Box(modifier = Modifier.size(52.dp))
+        Box(modifier = Modifier.size(size))
     }
 }
 
