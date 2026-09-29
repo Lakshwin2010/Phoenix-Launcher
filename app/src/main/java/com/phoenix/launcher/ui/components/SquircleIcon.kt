@@ -46,14 +46,13 @@ fun SquircleIcon(
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .width(76.dp)
+        modifier = (if (showLabel) Modifier.width(76.dp) else Modifier.width(iconSize))
             .clip(RoundedCornerShape(12.dp))
             .combinedClickable(
                 onClick = onClick,
                 onLongClick = onLongClick
             )
-            .padding(vertical = 4.dp)
+            .padding(vertical = if (showLabel) 4.dp else 0.dp)
     ) {
         Box(
             modifier = Modifier.size(iconSize),

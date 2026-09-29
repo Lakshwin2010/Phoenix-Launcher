@@ -170,8 +170,8 @@ fun AppLibraryScreen(
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
                 contentPadding = PaddingValues(bottom = 32.dp),
-                verticalArrangement = Arrangement.spacedBy(14.dp),
-                horizontalArrangement = Arrangement.spacedBy(14.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier.fillMaxSize()
             ) {
                 // 1. iOS Suggestions Folder
@@ -265,62 +265,64 @@ fun IosCategoryFolderCard(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         IosFolderSquareCard {
+            val iconSpacing = 8.dp
+            val iconSize = 52.dp
+
             when (apps.size) {
                 1 -> {
-                    MiniAppSlot(apps[0], onAppClick, onAppLongClick, size = 60.dp)
+                    MiniAppSlot(apps[0], onAppClick, onAppLongClick, size = 58.dp)
                 }
                 2 -> {
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterHorizontally),
+                        horizontalArrangement = Arrangement.spacedBy(iconSpacing, Alignment.CenterHorizontally),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        MiniAppSlot(apps[0], onAppClick, onAppLongClick)
-                        MiniAppSlot(apps[1], onAppClick, onAppLongClick)
+                        MiniAppSlot(apps[0], onAppClick, onAppLongClick, size = iconSize)
+                        MiniAppSlot(apps[1], onAppClick, onAppLongClick, size = iconSize)
                     }
                 }
                 3 -> {
                     Column(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalArrangement = Arrangement.SpaceBetween,
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(iconSpacing)
                     ) {
                         Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
+                            horizontalArrangement = Arrangement.spacedBy(iconSpacing),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            MiniAppSlot(apps[0], onAppClick, onAppLongClick)
-                            MiniAppSlot(apps[1], onAppClick, onAppLongClick)
+                            MiniAppSlot(apps[0], onAppClick, onAppLongClick, size = iconSize)
+                            MiniAppSlot(apps[1], onAppClick, onAppLongClick, size = iconSize)
                         }
-                        MiniAppSlot(apps[2], onAppClick, onAppLongClick)
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(iconSpacing),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            MiniAppSlot(apps[2], onAppClick, onAppLongClick, size = iconSize)
+                        }
                     }
                 }
                 else -> {
                     Column(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalArrangement = Arrangement.SpaceBetween,
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(iconSpacing)
                     ) {
                         Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
+                            horizontalArrangement = Arrangement.spacedBy(iconSpacing),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            MiniAppSlot(apps[0], onAppClick, onAppLongClick)
-                            MiniAppSlot(apps[1], onAppClick, onAppLongClick)
+                            MiniAppSlot(apps[0], onAppClick, onAppLongClick, size = iconSize)
+                            MiniAppSlot(apps[1], onAppClick, onAppLongClick, size = iconSize)
                         }
                         Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
+                            horizontalArrangement = Arrangement.spacedBy(iconSpacing),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            MiniAppSlot(apps[2], onAppClick, onAppLongClick)
+                            MiniAppSlot(apps[2], onAppClick, onAppLongClick, size = iconSize)
                             if (apps.size > 4) {
                                 Box(
                                     modifier = Modifier
-                                        .size(52.dp)
-                                        .clip(RoundedCornerShape(14.dp))
+                                        .size(iconSize)
+                                        .clip(RoundedCornerShape(13.dp))
                                         .background(Color.White.copy(alpha = 0.12f)),
                                     contentAlignment = Alignment.Center
                                 ) {
@@ -332,7 +334,7 @@ fun IosCategoryFolderCard(
                                     )
                                 }
                             } else {
-                                MiniAppSlot(apps[3], onAppClick, onAppLongClick)
+                                MiniAppSlot(apps[3], onAppClick, onAppLongClick, size = iconSize)
                             }
                         }
                     }
@@ -414,62 +416,64 @@ fun IosHiddenFolderCard(
                         }
                     }
                 } else {
+                    val iconSpacing = 8.dp
+                    val iconSize = 52.dp
+
                     when (hiddenApps.size) {
                         1 -> {
-                            MiniAppSlot(hiddenApps[0], onAppClick, onAppLongClick, size = 60.dp)
+                            MiniAppSlot(hiddenApps[0], onAppClick, onAppLongClick, size = 58.dp)
                         }
                         2 -> {
                             Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterHorizontally),
+                                horizontalArrangement = Arrangement.spacedBy(iconSpacing, Alignment.CenterHorizontally),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                MiniAppSlot(hiddenApps[0], onAppClick, onAppLongClick)
-                                MiniAppSlot(hiddenApps[1], onAppClick, onAppLongClick)
+                                MiniAppSlot(hiddenApps[0], onAppClick, onAppLongClick, size = iconSize)
+                                MiniAppSlot(hiddenApps[1], onAppClick, onAppLongClick, size = iconSize)
                             }
                         }
                         3 -> {
                             Column(
-                                modifier = Modifier.fillMaxSize(),
-                                verticalArrangement = Arrangement.SpaceBetween,
-                                horizontalAlignment = Alignment.CenterHorizontally
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(iconSpacing)
                             ) {
                                 Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    horizontalArrangement = Arrangement.spacedBy(iconSpacing),
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    MiniAppSlot(hiddenApps[0], onAppClick, onAppLongClick)
-                                    MiniAppSlot(hiddenApps[1], onAppClick, onAppLongClick)
+                                    MiniAppSlot(hiddenApps[0], onAppClick, onAppLongClick, size = iconSize)
+                                    MiniAppSlot(hiddenApps[1], onAppClick, onAppLongClick, size = iconSize)
                                 }
-                                MiniAppSlot(hiddenApps[2], onAppClick, onAppLongClick)
+                                Row(
+                                    horizontalArrangement = Arrangement.spacedBy(iconSpacing),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    MiniAppSlot(hiddenApps[2], onAppClick, onAppLongClick, size = iconSize)
+                                }
                             }
                         }
                         else -> {
                             Column(
-                                modifier = Modifier.fillMaxSize(),
-                                verticalArrangement = Arrangement.SpaceBetween,
-                                horizontalAlignment = Alignment.CenterHorizontally
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(iconSpacing)
                             ) {
                                 Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    horizontalArrangement = Arrangement.spacedBy(iconSpacing),
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    MiniAppSlot(hiddenApps[0], onAppClick, onAppLongClick)
-                                    MiniAppSlot(hiddenApps[1], onAppClick, onAppLongClick)
+                                    MiniAppSlot(hiddenApps[0], onAppClick, onAppLongClick, size = iconSize)
+                                    MiniAppSlot(hiddenApps[1], onAppClick, onAppLongClick, size = iconSize)
                                 }
                                 Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    horizontalArrangement = Arrangement.spacedBy(iconSpacing),
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    MiniAppSlot(hiddenApps[2], onAppClick, onAppLongClick)
+                                    MiniAppSlot(hiddenApps[2], onAppClick, onAppLongClick, size = iconSize)
                                     if (hiddenApps.size > 4) {
                                         Box(
                                             modifier = Modifier
-                                                .size(52.dp)
-                                                .clip(RoundedCornerShape(14.dp))
+                                                .size(iconSize)
+                                                .clip(RoundedCornerShape(13.dp))
                                                 .background(Color.White.copy(alpha = 0.12f)),
                                             contentAlignment = Alignment.Center
                                         ) {
@@ -481,7 +485,7 @@ fun IosHiddenFolderCard(
                                             )
                                         }
                                     } else {
-                                        MiniAppSlot(hiddenApps[3], onAppClick, onAppLongClick)
+                                        MiniAppSlot(hiddenApps[3], onAppClick, onAppLongClick, size = iconSize)
                                     }
                                 }
                             }
