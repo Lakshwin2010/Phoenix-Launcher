@@ -154,27 +154,6 @@ fun IosDock(
                             }
                         }
                     }
-
-                    // Loop dots indicator when more than 4 apps are available
-                    if (totalCount > 4) {
-                        Spacer(modifier = Modifier.height(2.dp))
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(4.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            for (dotIndex in 0 until totalCount) {
-                                val isSelected = dotIndex == safeOffset
-                                Box(
-                                    modifier = Modifier
-                                        .size(if (isSelected) 4.5.dp else 3.5.dp)
-                                        .clip(CircleShape)
-                                        .background(
-                                            if (isSelected) Color.White else Color.White.copy(alpha = 0.3f)
-                                        )
-                                )
-                            }
-                        }
-                    }
                 }
             }
         }
